@@ -35,5 +35,10 @@ for c in certificates:
         False
     )
 
-    f5rest.update_management_cert(c['cert_key']['cert'],
-        c['cert_key']['key'])
+    try:
+        f5rest.update_management_cert(c['cert_key']['cert'],
+            c['cert_key']['key'])
+    except BaseException as e:
+        logger.error(f'Failed to update management certificate on {c["device_fqdn"]}')
+        logger.error(e)
+        continue
