@@ -9,7 +9,7 @@ if env == 'DEV':
 else:
     with open('/var/run/secrets/kubernetes.io/serviceaccount/token') as f:
         token = f.readlines()
-    cluster_api_url = f'{os.environ.get("KUBERNETES_SERVICE_HOST")}:{os.environ.get("KUBERNETES_PORT_443_TCP_PORT")}'
+    cluster_api_url = f'https://{os.environ.get("KUBERNETES_SERVICE_HOST")}:{os.environ.get("KUBERNETES_PORT_443_TCP_PORT")}'
 
 namespace = os.environ.get('NAMESPACE')
 
