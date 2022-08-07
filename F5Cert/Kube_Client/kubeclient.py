@@ -47,10 +47,13 @@ class KubeClient:
         }
 
     def get_certificates(self):
+        logger.debug(f'Getting {self.cluster_url}/apis/cert-manager.io/v1/namespaces/{self.namespace}/certificates')
         result = self.session.get(
             f'{self.cluster_url}/apis/cert-manager.io/v1/namespaces/{self.namespace}/certificates')
         data = result.json()
 
+        logger.debug(data)
+        
         certificates = []
 
         for c in data['items']:
