@@ -135,7 +135,7 @@ class F5rest:
             self.run_bash_command('bigstart restart httpd; killall -9 httpd;bigstart restart httpd;')
         except:
             logger.info('Waiting for management interface to restart')
-            time.sleep(3)
+            time.sleep(10)
             httpd_config = self.get_management_cert()
 
             if os.path.basename(httpd_config['sslCertfile']) == self.cert_name \
