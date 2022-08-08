@@ -15,7 +15,6 @@ The batchjob looks for Certificate objects with the following labels:
 
 | Name           | Value        | Description                                                                                      |
 |----------------|--------------|--------------------------------------------------------------------------------------------------|
-| f5-cert        | "true"       | Indicates that the certificate is managed by the script                                          |
 | f5-cert-type   | "management" | To support other certificates in the future                                                      |
 | f5-auth-ref    | string       | The name of the secret that contains the credentials to the F5 device that uses this certificate |
 | f5-device-fqdn | string       | The FQDN to the device that uses this certificate                                                |
@@ -28,7 +27,6 @@ metadata:
   name: bigip-xip-se
   namespace: f5-certs
   labels:
-    f5-cert: "true"
     f5-cert-type: "management"      # Only management certs supported at the moment
     f5-auth-ref: "f5-credentials"   # Reference to the secret holding the credentials (same namespace)
     f5-device-fqdn: "bigip.xip.se"  # The FQDN to the F5 device that will be updated
