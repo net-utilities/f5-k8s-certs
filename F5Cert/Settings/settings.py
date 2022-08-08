@@ -20,7 +20,7 @@ class Settings:
     def get_settings(self):
 
         namespace = os.environ.get('NAMESPACE')
-        [token, cluster_api_url] = self.get_dev_settings() if self.env == 'DEV' else self.get_k8s_settings()
+        [token, cluster_api_url] = self.get_dev_settings() if self.environment == 'DEV' else self.get_k8s_settings()
 
         if token is None:
             raise ValueError("Missing token")
