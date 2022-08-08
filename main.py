@@ -28,6 +28,6 @@ for c in certificates:
         f5rest.update_management_cert(cert,
                                       key)
     except BaseException as e:
-        logger.error(f'Failed to update management certificate on {c["device_fqdn"]}')
+        logger.error(f'Failed to update management certificate on {f5_device_fqdn}')
         logger.error(e)
         continue

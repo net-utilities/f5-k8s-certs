@@ -70,15 +70,15 @@ class F5rest:
                               verify=self.verify_ssl)
             start += current_bytes
 
-    def run_bash_command(self, command):
+    def run_bash_command(self, command, timeout=None):
 
         payload = {
             'command': 'run',
             'utilCmdArgs': f"-c '{command}'"
         }
 
-        response = self.session.post('https://' + self.device + '/mgmt/tm/util/bash',
-                                     json=payload, verify=self.verify_ssl)
+        response = self.session.post(f'https://{self.device}/mgmt/tm/util/bash',
+                                     json=payload, verify=self.verify_ssl, timeout=timeout)
         response_json = response.json()
 
         if 'commandResult' in response_json:
@@ -132,8 +132,8 @@ class F5rest:
         )
         try:
             logger.info('Restarting httpd')
-            self.run_bash_command('bigstart restart httpd; killall -9 httpd;bigstart restart httpd;')
-        except:
+            self.run_bash_command('bigstart restart httpd; killall -9 httpd;bigstart restart httpd;', timeout=5)
+        except Exception as e:
             logger.info('Waiting for management interface to restart')
             time.sleep(10)
             httpd_config = self.get_http_config()
