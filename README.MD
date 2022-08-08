@@ -65,5 +65,22 @@ Below are the environment variables that must be set:
 | NAMESPACE       | Yes       |         | Where the certificates and the batch job resides             |
 | LOG_LEVEL       | No        | INFO    | Can be either INFO or DEBUG, defaults to                     |
 
+Docker-Compose DEV example
+
+```
+# This file is to test the container during development
+# Don't use this in prod
+
+version: "3.9"
+services:
+  app:
+    build: .
+    environment:
+      ENVIRONMENT: DEV
+      CLUSTER_API_URL: https://rancher.domain.com/k8s/clusters/c-abcde
+      KUBE_TOKEN: <token>
+      NAMESPACE: f5-certs
+```
+
 # Using this project in Kubernetes
 
