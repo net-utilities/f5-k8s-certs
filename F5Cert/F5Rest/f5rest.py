@@ -115,7 +115,7 @@ class F5rest:
         self.run_bash_command(f'mv /var/config/rest/downloads/{self.key_name} /config/httpd/conf/ssl.key/')
         self.set_management_cert()
 
-    def get_management_cert(self):
+    def get_http_config(self):
         response = self.session.get(f'https://{self.device}/mgmt/tm/sys/httpd')
         return response.json()
 
@@ -136,7 +136,7 @@ class F5rest:
         except:
             logger.info('Waiting for management interface to restart')
             time.sleep(10)
-            httpd_config = self.get_management_cert()
+            httpd_config = self.get_http_config()
 
             if os.path.basename(httpd_config['sslCertfile']) == self.cert_name \
                     and os.path.basename(httpd_config['sslCertkeyfile']) == self.key_name:

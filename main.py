@@ -1,21 +1,7 @@
 #!/usr/bin/python3
-from F5Cert import F5rest, logger, KubeClient
-import os
+from F5Cert import F5rest, logger, KubeClient, Settings
 
-env = os.environ.get('ENVIRONMENT', 'PROD')
-if env == 'DEV':
-    token = os.environ.get('KUBE_TOKEN')
-    cluster_api_url = os.environ.get('CLUSTER_API_URL')
-else:
-    with open('/var/run/secrets/kubernetes.io/serviceaccount/token') as f:
-        token = f.read()
-    cluster_api_url = f'https://{os.environ.get("KUBERNETES_SERVICE_HOST")}:{os.environ.get("KUBERNETES_PORT_443_TCP_PORT")}'
-
-namespace = os.environ.get('NAMESPACE')
-
-if [x for x in [token, cluster_api_url, namespace] if x is None]:
-    logger.error('Missing one or more environment variables, please check the README')
-
+[token, cluster_api_url, namespace] = Settings().get_settings()
 
 kube_client = KubeClient(token, cluster_api_url, namespace)
 
