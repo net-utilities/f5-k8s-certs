@@ -47,7 +47,7 @@ class F5rest:
 
         chunk_size = 512 * 1024
         size = file_obj.getbuffer().nbytes
-        end_point = 'https://192.168.70.245/mgmt/shared/file-transfer/uploads/' + name
+        end_point = f'https://192.168.70.245/mgmt/shared/file-transfer/uploads/{name}'
 
         start = 0
 
@@ -79,6 +79,10 @@ class F5rest:
 
         response = self.session.post(f'https://{self.device}/mgmt/tm/util/bash',
                                      json=payload, verify=self.verify_ssl, timeout=timeout)
+
+        if response.status_code != 200:
+            raise RuntimeError(f'Command {command} failed to run on {self.device}')
+
         response_json = response.json()
 
         if 'commandResult' in response_json:
@@ -127,8 +131,8 @@ class F5rest:
         self.session.put(
             f'https://{self.device}/mgmt/tm/sys/httpd',
             json={
-                'sslCertfile': f'/config/httpd/conf/ssl.crt/{self.cert_name}.crt',
-                'sslCertkeyfile': f'/config/httpd/conf/ssl.key/{self.key_name}.key'}
+                'sslCertfile': f'/config/httpd/conf/ssl.crt/{self.cert_name}',
+                'sslCertkeyfile': f'/config/httpd/conf/ssl.key/{self.key_name}'}
         )
         try:
             logger.info('Restarting httpd')
