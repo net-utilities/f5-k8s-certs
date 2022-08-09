@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cert-updater
+  namespace: {{ .Values.namespace  }}
+spec:
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 10
+  schedule: "43 * * * *"
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 300
+      backoffLimit: 1
+      template:
+        spec:
+          containers:
+          - name: cert-updater
+            image: bigipreport/f5-k8s-certs:latest
+            imagePullPolicy: Always
+            env:
+            - name: CLUSTER_API_URL
+              value: {{ .Values.cert_updater.cluster_api_url }}
+            - name: NAMESPACE
+              value: {{ .Values.namespace  }}
+            - name: LOG_LEVEL
+              value: {{ .Values.cert_updater.log_level  }}
+          restartPolicy: Never
+          serviceAccountName: f5-certs-sa
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            fsGroup: 472

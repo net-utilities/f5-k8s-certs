@@ -80,6 +80,28 @@ services:
       NAMESPACE: f5-certs
 ```
 
+# Debug pod
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: debug-container
+  namespace: f5-certs
+  labels:
+    app: ubuntu
+spec:
+  containers:
+  - image: bigipreport/f5-k8s-certs:latest
+    command:
+      - "sleep"
+      - "604800"
+    imagePullPolicy: Always
+    name: ubuntu
+  restartPolicy: Always
+  serviceAccountName: f5-certs-sa
+```
+
 # Using this project in Kubernetes
 
 Coming up...

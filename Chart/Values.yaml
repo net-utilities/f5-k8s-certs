@@ -1,0 +1,4 @@
+namespace: f5-certs
+cert_updater:
+  cluster_api_url: https://rancher.xip.se/k8s/clusters/a-bcde
+  log_level: DEBUG

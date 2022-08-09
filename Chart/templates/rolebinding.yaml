@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: f5-certs-rolebinding
+  namespace: {{ .Values.namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: f5-certs-role
+subjects:
+- namespace: f5-certs
+  kind: ServiceAccount
+  name: f5-certs-sa
