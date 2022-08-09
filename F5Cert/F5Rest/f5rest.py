@@ -1,4 +1,5 @@
 import requests, os, re, hashlib, time, io
+from typing import Optional
 from F5Cert.logger.logger import logger
 
 import urllib3
@@ -7,7 +8,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 class F5rest:
-    def __init__(self, username, password, device, name, verify_ssl=False):
+    def __init__(self, username: str, password: str, device: str, name: str, verify_ssl=False):
         self.device = device
         self.username = username
         self.password = password
@@ -37,7 +38,7 @@ class F5rest:
             self._session.verify = self.verify_ssl
         return self._session
 
-    def upload_file(self, name, data):
+    def upload_file(self, name: str, data: bytes):
 
         headers = {
             'Content-Type': 'application/octet-stream',
@@ -70,7 +71,7 @@ class F5rest:
                               verify=self.verify_ssl)
             start += current_bytes
 
-    def run_bash_command(self, command, timeout=None):
+    def run_bash_command(self, command: str, timeout=None) -> Optional[str]:
 
         payload = {
             'command': 'run',
@@ -92,18 +93,18 @@ class F5rest:
         else:
             return None
 
-    def test_remote_file(self, file_path):
-        return self.run_bash_command(f'[ -f "{file_path}" ] && echo 1 || echo 0') == '1';
+    def test_remote_file(self, file_path) -> bool:
+        return self.run_bash_command(f'[ -f "{file_path}" ] && echo 1 || echo 0') == '1'
 
-    def remote_sha256(self, file_path):
+    def remote_sha256(self, file_path: str) -> str:
         if self.test_remote_file(file_path):
             res = self.run_bash_command(f'sha256sum {file_path}')
             return re.sub(' .+$', '', res)
 
-    def local_sha256(self, file):
+    def local_sha256(self, file) -> str:
         return hashlib.sha256(file.decode('utf-8').encode('utf-8')).hexdigest()
 
-    def update_management_cert(self, cert, key):
+    def update_management_cert(self, cert: bytes, key: bytes):
 
         remote_cert_path = f'/config/httpd/conf/ssl.crt/{self.cert_name}'
         remote_key_path = f'/config/httpd/conf/ssl.key/{self.key_name}'
@@ -123,7 +124,7 @@ class F5rest:
         response = self.session.get(f'https://{self.device}/mgmt/tm/sys/httpd')
         return response.json()
 
-    def set_management_cert(self):
+    def set_management_cert(self) -> None:
 
         self.run_bash_command(f'restorecon -RvF /config/httpd/conf/ssl.crt/{self.cert_name}')
         self.run_bash_command(f'restorecon -RvF /config/httpd/conf/ssl.key/{self.key_name}')
@@ -146,4 +147,4 @@ class F5rest:
                     and os.path.basename(httpd_config['sslCertkeyfile']) == self.key_name:
                 print('Certificate has been updated and the httpd interface is responding')
             else:
-                raise Exception('Failed to update the certificate')
+                raise Exception(e)

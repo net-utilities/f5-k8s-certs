@@ -2,16 +2,16 @@
 
 # F5 certificate manager
 
-This project uses the Kubernetes cert-manager to maintain management certificates on F5 devices.
-There is a plan to add other certfificates in the future but do not hold your breath. :)
+This project uses the Kubernetes cert-manager to maintain ***management*** certificates on F5 devices.
+There is a plan to traffic management certificates in the future but do not hold your breath. :)
 
 # How it works
-A batchjob is executed in Kubernetes with a service account which is allowed to read:
+A BatchJob is scheduled in Kubernetes with a service account which is allowed to read:
 
 * Secrets
 * Certificates
 
-The batchjob looks for Certificate objects with the following labels:
+The BatchJob looks for Certificate objects with the following labels:
 
 | Name           | Value        | Description                                                                                      |
 |----------------|--------------|--------------------------------------------------------------------------------------------------|
@@ -19,7 +19,7 @@ The batchjob looks for Certificate objects with the following labels:
 | f5-auth-ref    | string       | The name of the secret that contains the credentials to the F5 device that uses this certificate |
 | f5-device-fqdn | string       | The FQDN to the device that uses this certificate                                                |
 
-Example Certificate:
+Example Certificate resource:
 ```yaml
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
@@ -65,7 +65,7 @@ Below are the environment variables that must be set:
 
 Docker-Compose DEV example
 
-```
+```yaml
 # This file is to test the container during development
 # Don't use this in prod
 
@@ -82,3 +82,4 @@ services:
 
 # Using this project in Kubernetes
 
+Coming up...

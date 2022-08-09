@@ -1,4 +1,4 @@
-import requests, os, re, hashlib, time, base64
+import requests, base64, typing
 from F5Cert.logger.logger import logger
 
 import urllib3
@@ -7,7 +7,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 class KubeClient:
-    def __init__(self, token, cluster_url, namespace, verify_ssl=False):
+    def __init__(self, token: str, cluster_url: str, namespace: str, verify_ssl=False):
         self._token = token
         self.cluster_url = cluster_url
         self.verify_ssl = verify_ssl
@@ -22,13 +22,13 @@ class KubeClient:
             self._session.verify = self.verify_ssl
         return self._session
 
-    def get_secret(self, name):
+    def get_secret(self, name: str):
         result = self.session.get(
             f'{self.cluster_url}/api/v1/namespaces/f5-certs/secrets/{name}')
         data = result.json()
         return data['data']
 
-    def get_f5_credentials(self, name):
+    def get_f5_credentials(self, name: str):
         data = self.get_secret(name)
         username = data.get('F5_PASSWORD')
         password = data.get('F5_PASSWORD')
@@ -37,7 +37,7 @@ class KubeClient:
             base64.b64decode(password).decode('utf-8'),
         ]
 
-    def get_cert_key(self, name):
+    def get_cert_key(self, name: str):
         data = self.get_secret(name)
         certificate = data.get('tls.crt')
         key = data.get('tls.key')
