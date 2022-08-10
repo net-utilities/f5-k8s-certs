@@ -1,6 +1,4 @@
-# This is still a work in progress. Use at own risk
-
-# F5 certificate manager
+# F5 management certificate updater for Kubernetes
 
 This project uses the Kubernetes cert-manager to maintain ***management*** certificates on F5 devices.
 There is a plan to traffic management certificates in the future but do not hold your breath. :)
