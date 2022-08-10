@@ -26,26 +26,26 @@ It does assume you have a bit of experience with Kubernetes and Kubectl, but not
 
 ## Prerequisites
 * The Kubernetes cluster running the BatchJob which updates the certificates needs to 
-have access to any F5 on port 443 in order to update the management certificates
-* You need a DNS record pointing to the F5
+have access to any F5 on port 443 in order to update the management certificates.
+* You need a DNS record pointing to the F5.
 * You need a functioning Certificate Manager able to sign a certificate for this DNS record
 If you don't I have a guide for this [here](https://loadbalancing.se/2021/01/02/internal-rancher-ha-letsencrypt-google-cloud-dns/).
 * You need [helm](https://helm.sh) installed on your client.
 
 ## Deploy the help template
 
-1. Make sure your KUBECONFIG is configured to use the cluster that will runt the app
-2. Go to `Chart/` in this repository
+1. Make sure your KUBECONFIG is configured to use the cluster that will runt the app.
+2. Go to `Chart/` in this repository.
 3. Optional: Configure the Values.yaml file.
 The default options works fine but you may want to use your own namespace name.
-4. Run `helm template f5-certs -f Values.yaml .` to see the outcome of the install.
+4. Run `helm template f5-certs -f Values.yaml .` to see the outcome of the installation.
 5. If you're happy, run `helm install f5-certs -f Values.yaml .` to install.
 
 Now you have a BatchJob which will run at 8am every morning unless you changed the default setting.
 
 ## Configure F5 Credentials and Certificates
 
-1. Create a secret in your chosen namespace
+1. Create a secret in your chosen namespace:
 
 ```yaml
 apiVersion: v1
@@ -103,6 +103,8 @@ You can choose to create new credentials or create new ones if necessary.*
 
 ## Run the BatchJob manually
 
+To test the BatchJob you can fire one off manually like this:
+
 ```bash
 kubectl create job -n f5-certs --from=cronjob/cert-updater cert-updater-01
 kubectl logs -n f5-certs job/cert-updater-01 
@@ -121,9 +123,9 @@ kubectl logs -n f5-certs job/cert-updater-02
 # Contributing
 Oh, I'd love some contributions to the project. Just two small requests:
 
-* Try to keep them as small as possible
-* Keep the language to Python
-* Be nice
+* Try to keep them as small as possible.
+* Keep the language to Python.
+* Be nice.
 
 ## Setting up a development environment
 
@@ -137,18 +139,18 @@ More on that below.
 
 ### Prerequisites
 
-* A Kubernetes cluster
-* An F5 device with a DNS pointing to it
-* You need a functioning Certificate Manager able to sign a certificate for this DNS record
+* A Kubernetes cluster.
+* An F5 device with a DNS pointing to it.
+* You need a functioning Certificate Manager able to sign a certificate for this DNS record.
 If you don't I have a guide for this [here](https://loadbalancing.se/2021/01/02/internal-rancher-ha-letsencrypt-google-cloud-dns/).
 
 ### Setup a namespace, Secret with F5 Credentials, and a Certificate
 
-1. Create a namespace where you can host the certificate
+1. Create a namespace where you can host the certificate:
 
 `kubectl create ns f5-certs`
 
-2. Follow [the steps below](#Configure F5 Credentials and Certificate) to add the F5 Credentials and Certificate
+2. Follow [the steps below](#Configure F5 Credentials and Certificate) to add the F5 Credentials and Certificate.
 
 3. Either use `export` or set the following environment variables in your IDE:
 
@@ -167,7 +169,7 @@ Once the code works you your client you might want to test it in the docker cont
 Since we're not using Kubernetes for this particular step you need to define the same
 environment variables again.
 
-Here's a useful docker-compose example
+Here's a useful docker-compose example:
 
 ```yaml
 # This file is to test the container during development
