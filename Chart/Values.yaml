@@ -1,4 +1,24 @@
-namespace: f5-certs
-cert_updater:
-  cluster_api_url: https://rancher.xip.se/k8s/clusters/a-bcde
-  log_level: DEBUG
+# Namespace config
+namespace:
+  # Name space where you want to run the cert-updater BatchJob
+  name: f5-certs
+  # Labels of the namespace
+  labels: {}
+service_account:
+  # Name of the service account
+  name: f5-certs-sa
+role:
+  # Name of the role running the cert job
+  name: f5-certs-role
+
+# Configuration of the BatchJob
+certUpdater:
+  # How often the BatchJob should run
+  crontabExpression: 0 8 * * *
+  # Loglevel of the job
+  logLevel: DEBUG
+  # Which image to use. You can either use the one below,
+  # or build your own with the Dockerfile in this repo
+  image: bigipreport/f5-k8s-certs:latest
+  # When should the image be pulled?
+  imagePullPolicy: Always
