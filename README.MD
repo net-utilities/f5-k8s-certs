@@ -210,4 +210,3 @@ spec:
   restartPolicy: Always
   serviceAccountName: f5-certs-sa
 ```
-
