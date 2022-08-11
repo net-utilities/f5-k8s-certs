@@ -180,8 +180,7 @@ class F5rest:
         try:
             config_ok = self.httpd_config_is_configured_with_cert()
         except Exception as e:
-            # Sometimes it takes longer for the interface to come back up
-            # Trying a second time just in case
+            logger.info(f'{self.device}: httpd service is not ready, waiting 15 seconds before retrying')
             time.sleep(15)
             config_ok = self.httpd_config_is_configured_with_cert()
 
