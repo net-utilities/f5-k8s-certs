@@ -1,8 +1,8 @@
-import requests, os, re, hashlib, time, io
+import requests, os, re, hashlib, time, io, urllib3
 from typing import Optional
+from requests.adapters import HTTPAdapter, Retry
 from F5Cert.logger.logger import logger
 
-import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -18,27 +18,37 @@ class F5rest:
 
     @property
     def session(self):
-        if not self._session:
-            body = {
-                'username': self.username,
-                'password': self.password,
-                'loginProviderName': 'tmos'
-            }
 
-            logger.debug(f'{self.device}: Getting auth token')
-            token_response = requests.post(
-                f'https://{self.device}/mgmt/shared/authn/login',
-                verify=self.verify_ssl,
-                auth=(self.username, self.password), json=body) \
-                .json()
+        if self._session:
+            return self._session
 
-            token = token_response['token']['token']
-            logger.debug(f'{self.device}: Got a token')
-            self._session = requests.Session()
-            self._session.headers.update({'X-F5-Auth-Token': token})
-            logger.debug(f'{self.device}: Setting SSL validation to {str(self.verify_ssl)}')
-            self._session.verify = self.verify_ssl
-        return self._session
+        retry_strategy = Retry(
+            total=3,
+            backoff_factor=10
+        )
+
+        s = requests.Session()
+
+        body = {
+            'username': self.username,
+            'password': self.password,
+            'loginProviderName': 'tmos'
+        }
+
+        logger.debug(f'{self.device}: Getting auth token')
+        token_response = s.post(
+            f'https://{self.device}/mgmt/shared/authn/login',
+            verify=self.verify_ssl,
+            auth=(self.username, self.password), json=body) \
+            .json()
+
+        token = token_response['token']['token']
+        logger.debug(f'{self.device}: Got a token')
+
+        s.headers.update({'X-F5-Auth-Token': token})
+        logger.debug(f'{self.device}: Setting SSL validation to {str(self.verify_ssl)}')
+        s = self.verify_ssl
+        self._session = s
 
     def upload_file(self, name: str, data: bytes):
 
@@ -165,8 +175,16 @@ class F5rest:
             self.run_bash_command('bigstart restart httpd; killall -9 httpd;bigstart restart httpd;', timeout=5)
         except Exception as e:
             logger.info(f'{self.device}: Waiting for management interface to restart')
+
+        time.sleep(15)
+        try:
+            config_ok = self.httpd_config_is_configured_with_cert()
+        except Exception as e:
+            # Sometimes it takes longer for the interface to come back up
+            # Trying a second time just in case
             time.sleep(15)
-            if self.httpd_config_is_configured_with_cert():
-                logger.info(f'{self.device}: Certificate and key has been updated successfully')
-            else:
-                raise Exception(e)
+            config_ok = self.httpd_config_is_configured_with_cert()
+
+        if not config_ok:
+            raise Exception(e)
+        logger.info(f'{self.device}: Certificate and key has been updated successfully')
