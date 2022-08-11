@@ -21,4 +21,4 @@ certUpdater:
   # or build your own with the Dockerfile in this repo
   image: bigipreport/f5-k8s-certs:v0.0.1
   # When should the image be pulled?
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent

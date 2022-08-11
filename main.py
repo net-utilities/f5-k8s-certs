@@ -13,7 +13,7 @@ for c in certificates:
     [cert, key] = cert_key
 
     if f5_cert_type != 'management':
-        logger.error('Certificate other than management certificates are not supported yet')
+        logger.error(f'{f5_device_fqdn}: Certificate other than management certificates are not supported yet')
         continue
 
     f5rest = F5rest(
@@ -28,6 +28,6 @@ for c in certificates:
         f5rest.update_management_cert(cert,
                                       key)
     except BaseException as e:
-        logger.error(f'Failed to update management certificate on {f5_device_fqdn}')
-        logger.error(e)
+        logger.error(f'{f5_device_fqdn}: Failed to update management certificate')
+        logger.error(f'{f5_device_fqdn}: {str(e)}')
         continue

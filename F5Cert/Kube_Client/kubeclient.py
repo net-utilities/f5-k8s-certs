@@ -57,10 +57,12 @@ class KubeClient:
         certificates = []
 
         for c in data['items']:
+            name = c['metadata']['name']
             if not 'labels' in c['metadata']:
                 continue
             labels = c['metadata']['labels']
             if labels.get('f5-cert-type') != 'management':
+                logger.debug(f'Skipping certificate {name} because the label "f5-cert-type" is invalid')
                 continue
 
             f5_cert_type = labels.get('f5-cert-type')
