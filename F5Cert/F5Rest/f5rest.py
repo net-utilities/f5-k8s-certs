@@ -18,37 +18,31 @@ class F5rest:
 
     @property
     def session(self):
+        if not self._session:
+            s = requests.Session()
 
-        if self._session:
-            return self._session
+            body = {
+                'username': self.username,
+                'password': self.password,
+                'loginProviderName': 'tmos'
+            }
 
-        retry_strategy = Retry(
-            total=3,
-            backoff_factor=10
-        )
+            logger.debug(f'{self.device}: Getting auth token')
+            token_response = s.post(
+                f'https://{self.device}/mgmt/shared/authn/login',
+                verify=self.verify_ssl,
+                auth=(self.username, self.password), json=body) \
+                .json()
 
-        s = requests.Session()
+            token = token_response['token']['token']
+            logger.debug(f'{self.device}: Got a token')
 
-        body = {
-            'username': self.username,
-            'password': self.password,
-            'loginProviderName': 'tmos'
-        }
+            s.headers.update({'X-F5-Auth-Token': token})
+            logger.debug(f'{self.device}: Setting SSL validation to {str(self.verify_ssl)}')
+            s.verify = self.verify_ssl
+            self._session = s
+        return self._session
 
-        logger.debug(f'{self.device}: Getting auth token')
-        token_response = s.post(
-            f'https://{self.device}/mgmt/shared/authn/login',
-            verify=self.verify_ssl,
-            auth=(self.username, self.password), json=body) \
-            .json()
-
-        token = token_response['token']['token']
-        logger.debug(f'{self.device}: Got a token')
-
-        s.headers.update({'X-F5-Auth-Token': token})
-        logger.debug(f'{self.device}: Setting SSL validation to {str(self.verify_ssl)}')
-        s = self.verify_ssl
-        self._session = s
 
     def upload_file(self, name: str, data: bytes):
 
