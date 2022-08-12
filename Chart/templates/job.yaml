@@ -22,6 +22,8 @@ spec:
               value: {{ .Values.namespace.name  }}
             - name: LOGLEVEL
               value: {{ .Values.certUpdater.logLevel  }}
+            resources:
+{{ toYaml .Values.certUpdater.resources | indent 14 }}
           restartPolicy: Never
           serviceAccountName: f5-certs-sa
           securityContext:

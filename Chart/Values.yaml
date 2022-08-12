@@ -19,6 +19,13 @@ certUpdater:
   logLevel: DEBUG
   # Which image to use. You can either use the one below,
   # or build your own with the Dockerfile in this repo
-  image: bigipreport/f5-k8s-certs:v0.0.1
+  image: bigipreport/f5-k8s-certs:latest #:v0.0.1
   # When should the image be pulled?
-  imagePullPolicy: IfNotPresent
+  imagePullPolicy: Always #IfNotPresent
+  resources:
+    requests:
+      memory: "50Mi"
+      cpu: "50m"
+    limits:
+      memory: "70Mi"
+      cpu: "100m"
