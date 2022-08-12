@@ -103,7 +103,7 @@ class F5rest:
 
     def test_remote_file(self, file_path) -> bool:
         logger.debug(f'{self.device}: Testing if {file_path} exists on the device')
-        return self.run_bash_command(f'[ -f "{file_path}" ] && echo 1 || echo 0') == '1'
+        return self.run_bash_command(f'test -f "{file_path}" && echo 1 || echo 0') == '1'
 
     def remote_sha256(self, file_path: str) -> str:
         logger.debug(f'{self.device}: Getting sha256 hash of {file_path} on the device')
