@@ -1,4 +1,4 @@
-FROM python:3.11.0b5-alpine3.16 as pythonBuilder
+FROM python:3.11.0rc2-alpine3.16 as pythonBuilder
 WORKDIR /home/root/server
 COPY . .
 RUN pip3 install --target=/home/root/server/dependencies -r requirements.txt
