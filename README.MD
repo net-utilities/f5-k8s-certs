@@ -66,12 +66,12 @@ data:
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
-  name: bigip-xip-se
+  name: bigip02-xip-se
   namespace: f5-certs
   labels:
     f5-cert-type: "management"
     f5-auth-ref: "f5-credentials"         # Reference to the secret holding the credentials (same namespace)
-    f5-device-fqdn: "bigip01.domain.com"  # The FQDN to the F5 device that will be updated
+    f5-device-fqdn: "bigip01.xip.se"  # The FQDN to the F5 device that will be updated
 spec:
   secretName: f5-cert
   issuerRef:
@@ -83,7 +83,7 @@ spec:
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
-  name: bigip-xip-se
+  name: bigip02-xip-se
   namespace: f5-certs
   labels:
     f5-cert-type: "management"
@@ -95,7 +95,7 @@ spec:
     name: letsencrypt-issuer
     kind: ClusterIssuer
   dnsNames:
-  - "bigip02.domain.com"
+  - "bigip02.xip.se"
 ```
 
 *Note how there are two certs above with two different domains, but the same credentials.
