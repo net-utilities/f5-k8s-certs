@@ -54,7 +54,7 @@ class F5rest:
 
         chunk_size = 512 * 1024
         size = file_obj.getbuffer().nbytes
-        end_point = f'https://192.168.70.245/mgmt/shared/file-transfer/uploads/{name}'
+        end_point = f'https://{self.device}/mgmt/shared/file-transfer/uploads/{name}'
 
         start = 0
 
